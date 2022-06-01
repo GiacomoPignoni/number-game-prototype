@@ -83,7 +83,7 @@ class _GameBoardState extends State<GameBoard> {
   }
 
   _upPressed() {
-    if(_selectedIndex == null) return;
+    if(_selectedIndex == null || _numbers[_selectedIndex!] == null) return;
 
     final indexsToCheck = <int>[];
     for(int i = _selectedIndex! - 5; i >= 0; i -= 5) {
@@ -94,18 +94,21 @@ class _GameBoardState extends State<GameBoard> {
   }
 
   _rightPressed() {
-    if(_selectedIndex == null) return;
+    if(_selectedIndex == null || _numbers[_selectedIndex!] == null) return;
 
     final indexsToCheck = <int>[];
     for(int i = _selectedIndex! + 1; i % 5 != 0 && i < _numbers.length; i++) {
       indexsToCheck.add(i);
     }
 
+
+    print(indexsToCheck);
+
     _handleIndexsToCheck(indexsToCheck);
   }
 
   _downPressed() {
-    if(_selectedIndex == null) return;
+    if(_selectedIndex == null || _numbers[_selectedIndex!] == null) return;
 
     final indexsToCheck = <int>[];
     for(int i = _selectedIndex! + 5; i < _numbers.length; i += 5) {
@@ -116,10 +119,16 @@ class _GameBoardState extends State<GameBoard> {
   }
 
   _leftPressed() {
-    if(_selectedIndex == null) return;
+    if(_selectedIndex == null || _numbers[_selectedIndex!] == null) return;
 
     final indexsToCheck = <int>[];
-    for(int i = _selectedIndex! - 1; (i % 5 != 0 || i == 0) && i >= 0; i--) {
+
+    int startIndexForSearch = _selectedIndex! - 5;
+    while(startIndexForSearch % 5 != 0) {
+      startIndexForSearch++;
+    }
+
+    for(int i = _selectedIndex! - 1; i >= startIndexForSearch; i--) {
       indexsToCheck.add(i);
     }
 
@@ -127,7 +136,7 @@ class _GameBoardState extends State<GameBoard> {
   }
 
   _handleIndexsToCheck(List<int> indexsToCheck) {
-    if(indexsToCheck.isEmpty) return;
+    if(indexsToCheck.isEmpty || _numbers[_selectedIndex!] == null) return;
 
     for(int i = 0; i < indexsToCheck.length; i++) {
       if(_numbers[indexsToCheck[i]] == null) continue;
