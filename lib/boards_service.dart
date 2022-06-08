@@ -30,18 +30,12 @@ class BoardsService {
     _selectedBoard = ValueNotifier(_boardsBox.get("Main"));
   }
 
-  void addBoard(BoardModel board) {
+  void put(BoardModel board) {
     _boardsBox.put(
       board.name,
       board
     );
-  }
-
-  void updateBoard(BoardModel board) {
-    _boardsBox.put(
-      board.name,
-      board
-    );
+    _selectedBoard.value = board;
   }
 
   List<String> getBoardsList() {

@@ -13,17 +13,24 @@ class GameBoard extends StatefulWidget {
 }
 
 class _GameBoardState extends State<GameBoard> {
+  late List<int?> _initialNumbers;
   late List<int?> _numbers;
   int? _selectedIndex;
 
   @override
   void initState() {
-    _numbers = widget.numbers;
+    _initialNumbers = widget.numbers;
+    _numbers = [...widget.numbers];
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    if(_initialNumbers.hashCode != widget.numbers.hashCode) {
+      _initialNumbers = widget.numbers;
+      _numbers = [...widget.numbers];
+    }
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,

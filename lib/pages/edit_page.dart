@@ -12,51 +12,44 @@ class EditPage extends StatelessWidget {
   final List<TextEditingController> _controllers = [];
   final TextEditingController _nameController = TextEditingController();
 
-  BoardModel _board = BoardModel(
-    name: "",
-    numbers: [
+  List<int?> _numbers = [
       null, null, null, null, null,
       null, null, null, null, null,
       null, null, null, null, null,
       null, null, null, null, null,
       null, null, null, null, null,
-    ]
-  ); 
+  ];
 
   bool editing = false;
 
   @override
   Widget build(BuildContext context) {
     if(ModalRoute.of(context)!.settings.arguments != null) {
-      _board = ModalRoute.of(context)!.settings.arguments as BoardModel;
+      final board = ModalRoute.of(context)!.settings.arguments as BoardModel;
+      _numbers = [...board.numbers];
+      _nameController.text = board.name;
       editing = true;
     }
-    _nameController.text = _board.name;
 
     return Scaffold(
       appBar: AppBar(
-        title: (editing)
-          ? Text(_board.name)
-          : TextField(
-            controller: _nameController,
-            style: const TextStyle(
-              color: Colors.white
-            ),
-            cursorColor: Colors.white,
-            onChanged: (String newValue) {
-              _board.name = newValue;
-            },
+        title: TextField(
+          controller: _nameController,
+          style: const TextStyle(
+            color: Colors.white
           ),
+          cursorColor: Colors.white,
+          enabled: editing == false,
+        ), 
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.save_rounded),
         onPressed: () {
-          if(_board.name.isNotEmpty) {
-            if(editing) {
-              _boardsService.updateBoard(_board);
-            } else {
-              _boardsService.addBoard(_board);
-            }
+          if(_nameController.text.isNotEmpty) {
+            _boardsService.put(BoardModel(
+              name: _nameController.text, 
+              numbers: _numbers
+            ));
             Navigator.of(context).pop();
           }
         },
@@ -85,13 +78,13 @@ class EditPage extends StatelessWidget {
                   crossAxisCount: 5,
                   childAspectRatio: 1,
                 ),
-                itemCount: _board.numbers.length,
+                itemCount: _numbers.length,
                 itemBuilder: (context, index) {
                   if(index > _controllers.length - 1) {
                     _controllers.add(TextEditingController());
                   }
                 
-                  _controllers[index].text = _board.numbers[index]?.toString() ?? "";
+                  _controllers[index].text = _numbers[index]?.toString() ?? "";
                 
                   return Container(
                     width: 10,
@@ -108,11 +101,11 @@ class EditPage extends StatelessWidget {
                       ],
                       onChanged: (String newValue) {
                         if(newValue.isEmpty) {
-                          _board.numbers[index] = null;
+                          _numbers[index] = null;
                         }
                 
                         final n = int.tryParse(newValue);
-                        _board.numbers[index] = n;
+                        _numbers[index] = n;
                       },
                     )
                   );

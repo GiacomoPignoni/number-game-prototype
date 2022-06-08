@@ -30,7 +30,6 @@ class HomePage extends StatelessWidget {
                 EditPage.path,
                 arguments: board
               );
-              
             },
           ),
           body: SafeArea(
