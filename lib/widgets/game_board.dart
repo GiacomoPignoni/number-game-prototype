@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 
 class GameBoard extends StatefulWidget {
+  final List<int?> numbers;
+
   const GameBoard({
+    required this.numbers,
     Key? key
   }) : super(key: key);
 
@@ -12,73 +14,60 @@ class GameBoard extends StatefulWidget {
 
 class _GameBoardState extends State<GameBoard> {
   late List<int?> _numbers;
-
   int? _selectedIndex;
 
   @override
   void initState() {
-    _numbers = [...GetIt.I.get<List<int?>>()];
+    _numbers = widget.numbers;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: SafeArea(
-        child: Column(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxHeight: 300,
+              maxWidth: 300
+            ),
+            child: GameGrid(
+              numbers: _numbers,
+              selectedIndex: _selectedIndex,
+              onCellPressed: _onCellPressed,
+            ),
+          ),
+        ),
+        IconButton(
+          icon: const Icon(Icons.arrow_upward_rounded),
+          onPressed: _upPressed, 
+        ),
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  maxHeight: 300,
-                  maxWidth: 300
-                ),
-                child: GameGrid(
-                  numbers: _numbers,
-                  selectedIndex: _selectedIndex,
-                  onCellPressed: _onCellPressed,
-                ),
-              ),
+            IconButton(
+              icon: const Icon(Icons.arrow_back_rounded),
+              onPressed: _leftPressed, 
             ),
             IconButton(
-              icon: const Icon(Icons.arrow_upward_rounded),
-              onPressed: _upPressed, 
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back_rounded),
-                  onPressed: _leftPressed, 
-                ),
-                IconButton(
-                  icon: const Icon(Icons.replay_outlined),
-                  onPressed: _reset, 
-                ),
-                IconButton(
-                  icon: const Icon(Icons.arrow_forward_rounded),
-                  onPressed: _rightPressed, 
-                ),
-              ],
+              icon: const Icon(Icons.replay_outlined),
+              onPressed: _reset, 
             ),
             IconButton(
-              icon: const Icon(Icons.arrow_downward_rounded),
-              onPressed: _downPressed, 
+              icon: const Icon(Icons.arrow_forward_rounded),
+              onPressed: _rightPressed, 
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.edit_rounded),
-        onPressed: () async {
-          await Navigator.of(context).pushNamed("edit");
-          _reset();
-        }
-      ),
+        IconButton(
+          icon: const Icon(Icons.arrow_downward_rounded),
+          onPressed: _downPressed, 
+        ),
+      ],
     );
   }
 
@@ -100,9 +89,6 @@ class _GameBoardState extends State<GameBoard> {
     for(int i = _selectedIndex! + 1; i % 5 != 0 && i < _numbers.length; i++) {
       indexsToCheck.add(i);
     }
-
-
-    print(indexsToCheck);
 
     _handleIndexsToCheck(indexsToCheck);
   }
@@ -163,7 +149,7 @@ class _GameBoardState extends State<GameBoard> {
 
   _reset() {
     setState(() {
-      _numbers = [...GetIt.I.get<List<int?>>()];
+      _numbers = widget.numbers;
       _selectedIndex = null;
     });
   }
