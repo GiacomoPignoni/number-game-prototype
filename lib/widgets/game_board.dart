@@ -13,21 +13,21 @@ class GameBoard extends StatefulWidget {
 }
 
 class _GameBoardState extends State<GameBoard> {
-  late List<int?> _initialNumbers;
+  late int _initialNumbersHashCode;
   late List<int?> _numbers;
   int? _selectedIndex;
 
   @override
   void initState() {
-    _initialNumbers = widget.numbers;
+    _initialNumbersHashCode = widget.numbers.hashCode;
     _numbers = [...widget.numbers];
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if(_initialNumbers.hashCode != widget.numbers.hashCode) {
-      _initialNumbers = widget.numbers;
+    if(_initialNumbersHashCode != widget.numbers.hashCode) {
+      _initialNumbersHashCode = widget.numbers.hashCode;
       _numbers = [...widget.numbers];
     }
 
@@ -50,28 +50,42 @@ class _GameBoardState extends State<GameBoard> {
           ),
         ),
         IconButton(
-          icon: const Icon(Icons.arrow_upward_rounded),
+          icon: const Icon(
+            Icons.arrow_upward_rounded,
+            size: 30,
+          ),
           onPressed: _upPressed, 
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton(
-              icon: const Icon(Icons.arrow_back_rounded),
+              icon: const Icon(
+                Icons.arrow_back_rounded,
+                size: 30,
+              ),
               onPressed: _leftPressed, 
             ),
             IconButton(
-              icon: const Icon(Icons.replay_outlined),
+              icon: const Icon(
+                Icons.replay_outlined
+              ),
               onPressed: _reset, 
             ),
             IconButton(
-              icon: const Icon(Icons.arrow_forward_rounded),
+              icon: const Icon(
+                Icons.arrow_forward_rounded,
+                size: 30,
+              ),
               onPressed: _rightPressed, 
             ),
           ],
         ),
         IconButton(
-          icon: const Icon(Icons.arrow_downward_rounded),
+          icon: const Icon(
+            Icons.arrow_downward_rounded,
+            size: 30
+          ),
           onPressed: _downPressed, 
         ),
       ],
@@ -156,7 +170,7 @@ class _GameBoardState extends State<GameBoard> {
 
   _reset() {
     setState(() {
-      _numbers = widget.numbers;
+      _numbers = [...widget.numbers];
       _selectedIndex = null;
     });
   }

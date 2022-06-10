@@ -21,14 +21,21 @@ class EditPage extends StatelessWidget {
   ];
 
   bool editing = false;
+  bool firstReadDone = false;
+
+  EditPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if(ModalRoute.of(context)!.settings.arguments != null) {
-      final board = ModalRoute.of(context)!.settings.arguments as BoardModel;
-      _numbers = [...board.numbers];
-      _nameController.text = board.name;
-      editing = true;
+    if(firstReadDone == false) {
+      if(ModalRoute.of(context)!.settings.arguments != null) {
+        final board = ModalRoute.of(context)!.settings.arguments as BoardModel;
+        _numbers = [...board.numbers];
+        _nameController.text = board.name;
+        editing = true;
+      }
+      
+      firstReadDone = true;
     }
 
     return Scaffold(
